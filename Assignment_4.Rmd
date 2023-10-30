@@ -1,0 +1,167 @@
+---
+title: "FML Assignment 4"
+author: "Anjali"
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-10-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+library(readr)
+Pharma_data <- read_csv("C:/Users/Anjali/Desktop/Anjali FML Assignment 4/Pharmaceuticals.csv")
+View(Pharma_data)
+head(Pharma_data)
+```
+
+```{r}
+# a. Use only the numerical variables (1 to 9) to cluster the 21 firms. Justify the various choices made in conducting the cluster analysis, such as weights for different variables, the specific clustering algorithm(s) used, the number of clusters formed, and so on. We have selected the variables of 3 to 11 which are 1 to 9.
+
+Numeric_vals <- Pharma_data [,3:11]
+head(Numeric_vals)
+```
+
+```{r}
+library(cluster)
+library(ggplot2)
+library(gridExtra)
+
+#We have scaled all numerical variables in the data frame
+
+scaling_Numeric_vals <- scale (Numeric_vals)
+head(scaling_Numeric_vals)
+```
+
+```{r}
+#To determine the number of clusters we did the cluster analysis
+Clusters <- (nrow(scaling_Numeric_vals)-1)*sum(apply(scaling_Numeric_vals,2,var))
+Clusters
+
+```
+
+```{r}
+for (i in 2:15) Clusters[i] <- sum(kmeans(scaling_Numeric_vals,centers=i)$withinss)
+Clusters
+```
+
+```{r}
+#K-Means Cluster Analysis - Fit the data with 5 clusters
+
+fit <- kmeans(scaling_Numeric_vals, 5)
+aggregate(scaling_Numeric_vals,by=list(fit$cluster),FUN=mean)
+
+Cluster_Number<- data.frame(scaling_Numeric_vals, fit$cluster)
+
+Cluster_Number
+```
+
+```{r}
+plot(1:15, Clusters, type="b", xlab="Number of Clusters",ylab="Within groups sum of squares")
+```
+
+```{r}
+library(cluster)
+clusplot(Cluster_Number, fit$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+```
+
+
+
+
+
+#b. Interpret the clusters with respect to the numerical variables used in forming the clusters.
+Cluster 1 – 17,11,15,13
+
+Cluster 2 – 2,18,20,5,3
+
+Cluster 3- 10,16,19,7,21,1,4
+
+Cluster 4 -14,9
+
+Cluster 5 – 12,8,6
+
+Cluster 1-We can interpret the cluster with help of Aggregate function
+aggregate(scaling_Numeric_vals, by=list(fit$cluster),FUN=mean)
+
+
+Cluster 1- 17,11,15,13
+It has the highest Market capitalization, ROE, ROA, Asset Turnover and lowest leverage
+When we compare with Csv file 2 are on hold and 2 are on buy median recommendation.
+
+
+Cluster 2- 2,18,20,5,3
+It has the Lowest negative beta, Highest P/E Ratio with strong asset turnover and second-lowest
+Profit Margin When we compare with CSV file we have 2 Moderate Buy, One Hold, One Moderate sell, , One
+Strong buy as per median of recommendation.
+
+
+Cluster 3 - 10,16,19,7,21,1,4
+In this Cluster, we have the highest Asset turnover, Net profit margin and second-lowest
+Leverage.
+When we compare with the CSV file, we have 5 Holds one moderate buy and one sell as per the
+median of recommendation.
+
+
+Cluster 4- 14,9
+It has the lowest Market capitalization, Price earning (P/E) Ratio, Return on equity (ROE),
+Second lowest ROE and Leverage, highest revenue Growth.
+When we compare with CSV file one moderate buy and one moderate sell as per median of
+recommendation.
+
+
+Cluster 5 – 12,8,6
+In this cluster, we have the lowest Asset Turnover, Profit margin, Second lowest market
+cap, Highest Net profit margin and second-highest beta.
+When we compare with CSV file we have 2 Holds and one buy as per the median of
+recommendation.
+
+
+
+
+
+#c. pattern in the clusters with respect to the numerical variables
+Cluster 1- It shows the buy recommendations Pattern. As it is made up of the highest Market
+capitalization, ROE, ROA, Asset Turnover, and lowest leverage so undoubtedly investors can go
+for Buy or Hold recommendation. which is also similar to the median of recommendation.
+
+
+Cluster 2- Highest Price earning ratio, strong asset turnover ratio with lowest or negative beta
+represents hold or buy, which is also like the median of recommendation.
+
+
+Cluster 3- strong Assets turnover ratio represents the company is efficiently able to use their
+assets to generate the revenue having highest net profit margin and lowest leverage make the
+investors to go for hold recommendation which is mostly like Median of recommendation.
+
+
+Cluster 4 - Cluster 4 has no pattern.
+
+
+Cluster 5 – It has the highest beta with that it also has the lowest ROE, ROA, and Asset Turnover.
+Higher beta stocks are risky in nature but provide a high return so we can name those
+stocks volatile stocks for risk-averse person recommendation is going to sell it did not
+represent any pattern.
+
+
+
+
+
+#d Provide an appropriate name for each cluster using any or all of the variables in the dataset
+Cluster 1 – Higher Market cap, ROE, ROA, and asset turnover Cluster.
+
+
+Cluster2- High Price-earnings ratio, asset turnover ratio and negative beta cluster.
+
+
+Cluster 3- High net profit margin and asset turnover Cluster.
+
+
+Cluster 4- low market capitalization, price-earnings ratio and return on equity cluster.
+
+
+Cluster 5- Highest Beta and lower ROE , ROA cluster.
+
